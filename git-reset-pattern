@@ -1,0 +1,28 @@
+e() 
+{
+	echo $1 | grep -E $2 | grep -E '(^M\s|^D\s|^R\s)' | cut -c 3-; 
+}
+
+f() 
+{
+	git st --porcelain | while read line
+	do 
+		file=$(e "$line" $1)
+		file=${file//\"/};
+		if [ ! -z "$file" -a "$file" != " " ]
+		then 
+			echo "reset file: $file"
+			git reset HEAD "$file" > /dev/null
+			git checkout "$file"
+		fi
+	done
+}
+
+if [ $# = 1 ]
+then
+	GIT_ROOT=`git rev-parse --show-toplevel`
+	(cd "$GIT_ROOT" && f $@)
+else
+	echo "usage: git reset-pattern <pattern>" >&2
+	exit 1
+fi
