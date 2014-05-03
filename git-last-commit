@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+AUTHOR=`git config user.name`
+git log -1 --pretty=oneline --author "$AUTHOR" $*
