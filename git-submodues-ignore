@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+printUsage()
+{
+	echo "usage: git ignore-submodules [-u]" >&2
+	exit 1
+}
+
+f()
+{
+	IGNORE=1 
+	while getopts ":u" opt; do
+		case $opt in
+	    u)
+	      IGNORE=0
+	      ;;
+	    \?)
+	      printUsage
+	      ;;
+	  	esac
+	done
+
+	if [ $IGNORE -eq 1 ]
+	then
+		echo "set all submodules to ignore"
+		git submodule -q foreach 'echo $name && git config --file $toplevel/.gitmodules submodule.$name.ignore "all"'
+	else
+		echo "reset all ignore flags for submodules"
+		git submodule -q foreach 'echo $name && git config --file $toplevel/.gitmodules --unset submodule.$name.ignore'
+	fi
+}
+
+GIT_ROOT=`git rev-parse --show-toplevel`
+(cd "$GIT_ROOT" && f $@)
