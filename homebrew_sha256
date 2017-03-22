@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+f()
+{
+    URL=$1
+    echo "checking sha256"
+    SUM=`curl -L -s $URL | shasum -a 256`
+
+    echo ""
+    echo "url \"$URL\""
+    echo "sha256 \"${SUM/  -/}\""
+    
+}
+
+if [ $# = 1 ]
+then
+    f $@
+else
+    echo "usage: $0 <URL>" >&2
+    exit 1
+fi
