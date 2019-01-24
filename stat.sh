@@ -16,6 +16,7 @@ sort -n | awk '
       median = ( a[c/2] + a[c/2-1] ) / 2;
     }
     OFS="\t";
+    print "sum", "count", "average", "median", "lowest", "highest"
     print sum, c, ave, median, a[0], a[c-1];
   }
 '
